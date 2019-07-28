@@ -15,7 +15,21 @@
           <Property Name="homeAddress" Type="varchar" MaxLength="100" />
           <Property Name="phoneNumber" Type="bigint" />
         </EntityType>
+        <Function Name="sp_deleteStudentByID" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="id" Type="int" Mode="In" />
+        </Function>
+        <Function Name="sp_insertupdate_student" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="id" Type="int" Mode="In" />
+          <Parameter Name="firstName" Type="varchar" Mode="In" />
+          <Parameter Name="lastName" Type="varchar" Mode="In" />
+          <Parameter Name="homeAddress" Type="varchar" Mode="In" />
+          <Parameter Name="phoneNumber" Type="bigint" Mode="In" />
+          <Parameter Name="idout" Type="int" Mode="InOut" />
+        </Function>
         <Function Name="sp_ViewAllStudent" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="sp_viewStudentById" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="id" Type="int" Mode="In" />
+        </Function>
         <EntityContainer Name="HomeTestModelStoreContainer">
           <EntitySet Name="student" EntityType="Self.student" Schema="dbo" store:Type="Tables" />
         </EntityContainer>
@@ -36,8 +50,29 @@
         <EntityContainer Name="StudentEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="student" EntityType="Self.student" />
           <FunctionImport Name="sp_ViewAllStudent" ReturnType="Collection(HomeTestModel.sp_ViewAllStudent_Result)" />
+          <FunctionImport Name="sp_insertupdate_student">
+            <Parameter Name="id" Mode="In" Type="Int32" />
+            <Parameter Name="firstName" Mode="In" Type="String" />
+            <Parameter Name="lastName" Mode="In" Type="String" />
+            <Parameter Name="homeAddress" Mode="In" Type="String" />
+            <Parameter Name="phoneNumber" Mode="In" Type="Int64" />
+            <Parameter Name="idout" Mode="InOut" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="sp_viewStudentById" ReturnType="Collection(HomeTestModel.sp_viewStudentById_Result)">
+          <Parameter Name="id" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="sp_deleteStudentByID">
+            <Parameter Name="id" Mode="In" Type="Int32" />
+          </FunctionImport>
         </EntityContainer>
         <ComplexType Name="sp_ViewAllStudent_Result">
+          <Property Type="Int32" Name="id" Nullable="false" />
+          <Property Type="String" Name="firstName" Nullable="true" MaxLength="20" />
+          <Property Type="String" Name="lastName" Nullable="true" MaxLength="20" />
+          <Property Type="String" Name="homeAddress" Nullable="true" MaxLength="100" />
+          <Property Type="Int64" Name="phoneNumber" Nullable="true" />
+        </ComplexType>
+        <ComplexType Name="sp_viewStudentById_Result">
           <Property Type="Int32" Name="id" Nullable="false" />
           <Property Type="String" Name="firstName" Nullable="true" MaxLength="20" />
           <Property Type="String" Name="lastName" Nullable="true" MaxLength="20" />
@@ -72,6 +107,19 @@
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="sp_insertupdate_student" FunctionName="HomeTestModel.Store.sp_insertupdate_student" />
+          <FunctionImportMapping FunctionImportName="sp_viewStudentById" FunctionName="HomeTestModel.Store.sp_viewStudentById">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="HomeTestModel.sp_viewStudentById_Result">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="firstName" ColumnName="firstName" />
+                <ScalarProperty Name="lastName" ColumnName="lastName" />
+                <ScalarProperty Name="homeAddress" ColumnName="homeAddress" />
+                <ScalarProperty Name="phoneNumber" ColumnName="phoneNumber" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="sp_deleteStudentByID" FunctionName="HomeTestModel.Store.sp_deleteStudentByID" />
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>
